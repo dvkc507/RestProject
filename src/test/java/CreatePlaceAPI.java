@@ -1,3 +1,4 @@
+import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
@@ -29,7 +30,8 @@ public class CreatePlaceAPI {
 				+ "  \"language\": \"French-IN\"\r\n"
 				+ "}\r\n"
 				+ "").when().post("/maps/api/place/add/json")
-		.then().log().all().assertThat().statusCode(200).header("Content-Type", "application/json;charset=UTF-8").extract().response();
+		.then().log().all().assertThat().statusCode(200).header("Content-Type", "application/json;charset=UTF-8")
+		.body("scope", Matchers.equalTo("APP")).extract().response();
 		
 	}
 
