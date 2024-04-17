@@ -5,8 +5,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import restUtil.Payload;
+import restUtil.ReUsableMethods;
 
 public class EndToEnd {
 	String Place_ID = "";
@@ -58,15 +60,25 @@ public class EndToEnd {
 				.when().patch("/maps/api/place/update/json").then().assertThat().log().all().statusCode(200).extract()
 				.asString();
 		System.out.println(response);
+		//Converting string to JSON
+		JsonPath jsPath = ReUsableMethods.rawToJSON(response);
+		System.out.println(jsPath);
+		String resMes = jsPath.getString("msg");
+		Assert.assertEquals(resMes, "Address successfully updated");
 	}
 
 	@Test(priority=3,dependsOnMethods="createPlace")
 	public void deleteAPITest() {
 		RestAssured.baseURI = "https://rahulshettyacademy.com";
 		String response = given().queryParam("key", "qaclick123").header("Content-type", "application/json")
-				.body("{\r\n" + "    \"place_id\":\""+Place_ID+"\"\r\n" + "}\r\n" + "").when()
+				.body(Payload.getDeletePlacePayload(Place_ID)).when()
 				.delete("/maps/api/place/delete/json").then().log().all().statusCode(200).extract().asString();
 		System.out.println(response);
+		//Converting string to JSON
+		JsonPath jsPath = ReUsableMethods.rawToJSON(response);
+		System.out.println(jsPath);
+		String resMes = jsPath.getString("status");
+		Assert.assertEquals(resMes, "OK");
 	}
 
 }
