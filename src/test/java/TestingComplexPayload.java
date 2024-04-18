@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -40,6 +45,19 @@ public class TestingComplexPayload {
 		int totalPrice = jsonPath.getInt("dashboard.purchaseAmount");
 		Assert.assertEquals(sum,totalPrice,"Actual and expected prices are not same");	
 	}
+
+@Test(description="reading json file")
+public void courseTesting() throws IOException {
+	// using Files we are converting to bytes and then using new string we are converting to string
+	String payload = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir")+"\\src\\test\\java\\restUtil\\getCourse.json")));
+	System.out.println(payload);
+	JsonPath jsPath = new JsonPath(payload);
+	//print number of courses
+			int courseCount = jsPath.getInt("courses.size()");
+			System.out.println("courseCount :"+courseCount);
+	
+}
+
 }
 //payload used is, mock/dummy payload, we can use dummy payload when we dont have API ready for testing
 //{
